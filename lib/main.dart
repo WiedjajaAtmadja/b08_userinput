@@ -1,4 +1,7 @@
+// add http package: flutter pub add http
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(MainApp());
@@ -15,6 +18,28 @@ class _MainAppState extends State<MainApp> {
   final _formKey = GlobalKey<FormState>();
   var _item = '';
   var _quantity = 0;
+
+  void _savedItem() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      debugPrint('Item: $_item, quantity: $_quantity');
+      final url = Uri.https(
+          'flutter-groceries-41c15-default-rtdb.asia-southeast1.firebasedatabase.app',
+          'shopping-groceries.json');
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            'name': _item,
+            'quantity': _quantity,
+          },
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,10 +88,7 @@ class _MainAppState extends State<MainApp> {
                 const SizedBox(height: 12),
                 ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      debugPrint('Item: $_item, quantity: $_quantity');
-                    }
+                    _savedItem();
                   },
                   child: const Text('Save'),
                 ),
