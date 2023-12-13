@@ -19,14 +19,14 @@ class _MainAppState extends State<MainApp> {
   var _item = '';
   var _quantity = 0;
 
-  void _savedItem() async {
+  void _savedItem() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       debugPrint('Item: $_item, quantity: $_quantity');
       final url = Uri.https(
           'flutter-groceries-41c15-default-rtdb.asia-southeast1.firebasedatabase.app',
           'shopping-groceries.json');
-      final response = await http.post(
+      final response = http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
